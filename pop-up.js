@@ -1,6 +1,8 @@
 export class PopUp {
     static #popUpContainer;
     static #deleteContainerTimer;
+    static #types = new Set(["success", "denide", "warn"]);
+    static #positionTypes = new Set(["left-top", "right-top", "left-bottom", "right-bottom"]);
 
     static create(properties) {
         let elem = document.querySelector("body");
@@ -14,15 +16,15 @@ export class PopUp {
             }
 
             if (properties.hasOwnProperty("type")) {
-                type = properties.type;
+                if (this.#types.has(properties.type)) type = properties.type;
             }
 
             if (properties.hasOwnProperty("position")) {
-                position = properties.position;
+                if (this.#positionTypes.has(properties.position)) position = properties.position;
             }
 
             if (properties.hasOwnProperty("time")) {
-                time = properties.time;
+                if (time > 0) time = properties.time;
             }
         }
 
@@ -71,9 +73,13 @@ export class PopUp {
                 break;
         }
 
-        popUp.append(circle, desc);
+        popUp.prepend(circle, desc);
         this.#popUpContainer.append(popUp);
-        elem.append(this.#popUpContainer);
+        try  {
+            elem.append(this.#popUpContainer);
+        } catch (e) {
+            console.error(new Error(`${elem} is not node element`));
+        }
 
         setTimeout(() => {
             popUp.classList.add("disactive");

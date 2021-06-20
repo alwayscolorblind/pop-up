@@ -1,5 +1,6 @@
 .pop-up-container {
     position: fixed;
+    z-index: 10000;
 }
 
 .pop-up {
