@@ -1,3 +1,7 @@
+.pop-up-container {
+    position: fixed;
+}
+
 .pop-up {
     font-family: "Open Sans", serif;
     width: 190px;
@@ -9,7 +13,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
+    position: relative;
+    transform: translate(0);
+    opacity: 1;
+    transition: transform .7s, opacity .5s;
 }
 
 .pop-up .circle {
@@ -28,7 +35,7 @@
     margin-left: 7px;
 }
 
-.pop-up.access > .circle {
+.pop-up.success > .circle {
     border-color: rgba(110, 255, 98, 1);
 }
 
@@ -38,4 +45,60 @@
 
 .pop-up.warn > .circle {
     border-color: rgba(255, 184, 78, 1);
+}
+
+.pop-up-container.left-top {
+    left: 10px;
+    top: 10px;
+}
+
+.pop-up-container.right-top {
+    right: 10px;
+    top: 10px;
+}
+
+.pop-up-container.left-bottom {
+    left: 10px;
+    bottom: 10px;
+}
+
+.pop-up-container.right-bottom {
+    right: 10px;
+    bottom: 10px;
+}
+
+.pop-up-container.left-top > .pop-up {
+    margin-bottom: 10px;
+}
+
+.pop-up-container.right-top > .pop-up {
+    margin-bottom: 10px;
+}
+
+.pop-up-container.left-bottom > .pop-up {
+    margin-top: 10px;
+}
+
+.pop-up-container.right-bottom > .pop-up {
+    margin-top: 10px;
+}
+
+.pop-up-container.left-top > .disactive {
+    transform: translate(-200px);
+    opacity: 0;
+}
+
+.pop-up-container.right-top > .disactive {
+    transform: translate(100%);
+    opacity: 0;
+}
+
+.pop-up-container.left-bottom > .disactive {
+    transform: translate(-200px);
+    opacity: 0;
+}
+
+.pop-up-container.right-bottom > .disactive {
+    transform: translate(100%);
+    opacity: 0;
 }

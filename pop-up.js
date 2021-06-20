@@ -1,10 +1,12 @@
 export class PopUp {
+    static #popUpContainer;
+    static #deleteContainerTimer;
+
     static create(properties) {
         let elem = document.querySelector("body");
-        let type = "access";
-        let top = 0;
-        let left = 0;
-        let time = 3000;
+        let type = "success";
+        let position = "left-top";
+        let time = 2000;
 
         if (properties) {
             if (properties.hasOwnProperty("element")) {
@@ -15,12 +17,8 @@ export class PopUp {
                 type = properties.type;
             }
 
-            if (properties.hasOwnProperty("top")) {
-                top = properties.top;
-            }
-
-            if (properties.hasOwnProperty("top")) {
-                left = properties.left;
+            if (properties.hasOwnProperty("position")) {
+                position = properties.position;
             }
 
             if (properties.hasOwnProperty("time")) {
@@ -28,16 +26,24 @@ export class PopUp {
             }
         }
 
-        this.#POP_UP_INIT(elem, type, top, left, time);
+        this.#POP_UP_INIT(elem, type, position, time);
     }
 
-    static #POP_UP_INIT(elem, type, top, left, time) {
+    static #POP_UP_INIT(elem, type, position, time) {
+        if (!this.#popUpContainer) {
+            this.#popUpContainer = document.createElement("div");
+            this.#popUpContainer.classList.add("pop-up-container");
+            this.#popUpContainer.classList.add(position);
+        }
+
         const popUp = document.createElement("div");
 
         popUp.classList.add("pop-up");
         popUp.classList.add(type);
-        popUp.style.top = `${top}px`;
-        popUp.style.left = `${left}px`;
+        popUp.classList.add("disactive");
+        setTimeout(() => {
+            popUp.classList.remove("disactive");
+        }, 0);
 
         const circle = document.createElement("div");
 
@@ -54,8 +60,8 @@ export class PopUp {
         desc.classList.add("desc");
 
         switch (type) {
-            case "access":
-                desc.innerHTML = "Access!";
+            case "success":
+                desc.innerHTML = "Success!";
                 break;
             case "denide":
                 desc.innerHTML = "Denide!";
@@ -66,10 +72,21 @@ export class PopUp {
         }
 
         popUp.append(circle, desc);
-        elem.append(popUp);
+        this.#popUpContainer.append(popUp);
+        elem.append(this.#popUpContainer);
 
         setTimeout(() => {
-            popUp.remove();
-        }, time);
+            popUp.classList.add("disactive");
+            setTimeout(() => {
+                popUp.remove();
+            }, 700)
+        }, time - 700);
+
+        if (this.#deleteContainerTimer) clearTimeout(this.#deleteContainerTimer);
+
+        this.#deleteContainerTimer = setTimeout(() => {
+            this.#popUpContainer.remove();
+            this.#popUpContainer = null;
+        }, time + 10);
     }
 }
