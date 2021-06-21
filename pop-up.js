@@ -1,37 +1,29 @@
 export class PopUp {
-    static #popUpContainer;
-    static #deleteContainerTimer;
+    #popUpContainer = null;
+    #deleteContainerTimer = null;
     static #types = new Set(["success", "denide", "warn"]);
     static #positionTypes = new Set(["left-top", "right-top", "left-bottom", "right-bottom"]);
 
-    static create(properties) {
-        let elem = document.querySelector("body");
-        let type = "success";
-        let position = "left-top";
-        let time = 2000;
-
-        if (properties) {
-            if (properties.hasOwnProperty("element")) {
-                elem = properties.element;
-            }
-
-            if (properties.hasOwnProperty("type")) {
-                if (this.#types.has(properties.type)) type = properties.type;
-            }
-
-            if (properties.hasOwnProperty("position")) {
-                if (this.#positionTypes.has(properties.position)) position = properties.position;
-            }
-
-            if (properties.hasOwnProperty("time")) {
-                if (time > 0) time = properties.time;
-            }
+    constructor(properties) {
+        const defaultProperties = {
+            elem: document.querySelector("body"),
+            type: "success",
+            position: "left-top",
+            time: 2000
         }
 
-        this.#POP_UP_INIT(elem, type, position, time);
+        this.currentProperties = {
+            ...defaultProperties, ...properties
+        }
+
+
     }
 
-    static #POP_UP_INIT(elem, type, position, time) {
+    create() {
+        this.#popUpInit(this.currentProperties);
+    }
+
+    #popUpInit({elem, type, position, time}) {
         if (!this.#popUpContainer) {
             this.#popUpContainer = document.createElement("div");
             this.#popUpContainer.classList.add("pop-up-container");
@@ -39,7 +31,6 @@ export class PopUp {
         }
 
         const popUp = document.createElement("div");
-
         popUp.classList.add("pop-up");
         popUp.classList.add(type);
         popUp.classList.add("disactive");
@@ -51,9 +42,9 @@ export class PopUp {
 
         circle.classList.add("circle");
 
-        const image = document.createElement("img");
+        const image = document.createElement("div");
 
-        image.src = `assets/${type}.svg`;
+        image.classList.add("image");
 
         circle.append(image);
 
@@ -93,6 +84,6 @@ export class PopUp {
         this.#deleteContainerTimer = setTimeout(() => {
             this.#popUpContainer.remove();
             this.#popUpContainer = null;
-        }, time + 10);
+        }, time);
     }
 }
