@@ -1,10 +1,11 @@
 export class PopUp {
     #popUpContainer = null;
+    #currentProperties = null;
     #types = ["success", "denide", "warn"];
+    #positionTypes = ["left-top", "right-top", "left-bottom", "right-bottom"];
     #defaultPopupConfig = {
         type: "success"
     }
-    #positionTypes = ["left-top", "right-top", "left-bottom", "right-bottom"];
 
     constructor(properties) {
         const defaultProperties = {
@@ -13,17 +14,17 @@ export class PopUp {
             defaultTime: 2000
         }
 
-        this.currentProperties = {
+        this.#currentProperties = {
             ...defaultProperties, ...properties
         }
 
-        if (this.#positionTypes.indexOf(this.currentProperties.position) === -1) {
-            throw new Error(`Unknown position: ${this.currentProperties.position}`);
+        if (this.#positionTypes.indexOf(this.#currentProperties.position) === -1) {
+            throw new Error(`Unknown position: ${this.#currentProperties.position}`);
         }
 
-        this.#defaultPopupConfig.time = this.currentProperties.defaultTime;
+        this.#defaultPopupConfig.time = this.#currentProperties.defaultTime;
 
-        this.#initContainer(this.currentProperties);
+        this.#initContainer(this.#currentProperties);
     }
 
     #initContainer({elem, position}) {
@@ -35,23 +36,44 @@ export class PopUp {
         elem.append(this.#popUpContainer);
     }
 
-    create({ type = "success", time = this.currentProperties.defaultTime} = this.#defaultPopupConfig) {
-        if (this.#types.indexOf(type) !== -1){
-            this.#popUpCreate(this.#popUpContainer, type, time);
+    show({type = "success", time = this.#currentProperties.defaultTime} = this.#defaultPopupConfig) {
+        let popUp = null;
+
+        if (this.#types.indexOf(type) !== -1) {
+            popUp = this.#createPopUp(type);
         } else {
             throw new Error(`Unknown type: ${type}`);
         }
+
+        this.#addRemovingTimeout(popUp, time);
+
+        this.#showPopUp(this.#popUpContainer, popUp);
     }
 
-    #popUpCreate(container, type, time) {
+    #createPopUp(type) {
         const popUp = document.createElement("div");
+
+        this.#initPopUpClasses(popUp, type);
+
+        const circleWithImage = this.#createCircleWithImage();
+
+        const description = this.#createDescription(type);
+
+        popUp.prepend(circleWithImage, description);
+
+        return popUp;
+    }
+
+    #initPopUpClasses(popUp, type) {
         popUp.classList.add("pop-up");
         popUp.classList.add(type);
         popUp.classList.add("transition"); // Added class "transition" to move popUp from client's view
         setTimeout(() => {
             popUp.classList.remove("transition");
         }, 0); // Remove class to start animation
+    }
 
+    #createCircleWithImage() {
         const circle = document.createElement("div");
 
         circle.classList.add("circle");
@@ -62,30 +84,44 @@ export class PopUp {
 
         circle.append(image);
 
-        const desc = document.createElement("p");
+        return circle;
+    }
 
-        desc.classList.add("desc");
+    #createDescription(type) {
+        const description = document.createElement("p");
+
+        description.classList.add("desc");
 
         switch (type) {
             case "success":
-                desc.innerHTML = "Success!";
+                description.innerHTML = "Success!";
                 break;
             case "denide":
-                desc.innerHTML = "Denide!";
+                description.innerHTML = "Denide!";
                 break;
             case "warn":
-                desc.innerHTML = "Warning!";
+                description.innerHTML = "Warning!";
                 break;
         }
 
-        popUp.prepend(circle, desc);
-        container.append(popUp);
+        return description;
+    }
 
+    #showPopUp(container, popUp) {
+        if (this.#currentProperties.position.endsWith("top")) {
+            container.prepend(popUp);
+        } else {
+            container.append(popUp);
+        }
+    }
+
+    #addRemovingTimeout(popUp, time) {
         setTimeout(() => {
-            popUp.classList.add("transition");
+            popUp.classList.add("transition"); // Enable animation before deleting
             setTimeout(() => {
                 popUp.remove();
             }, 700)
         }, time - 700);
     }
 }
+
