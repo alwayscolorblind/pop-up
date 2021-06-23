@@ -82,7 +82,7 @@ export class PopUp {
         container.append(popUp);
 
         setTimeout(() => {
-            popUp.classList.add("disactive");
+            popUp.classList.add("transition");
             setTimeout(() => {
                 popUp.remove();
             }, 700)
