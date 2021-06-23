@@ -84,22 +84,22 @@
     margin-top: 10px;
 }
 
-.pop-up-container.left-top > .disactive {
+.pop-up-container.left-top > .transition {
     transform: translate(-200px);
     opacity: 0;
 }
 
-.pop-up-container.right-top > .disactive {
+.pop-up-container.right-top > .transition {
     transform: translate(100%);
     opacity: 0;
 }
 
-.pop-up-container.left-bottom > .disactive {
+.pop-up-container.left-bottom > .transition {
     transform: translate(-200px);
     opacity: 0;
 }
 
-.pop-up-container.right-bottom > .disactive {
+.pop-up-container.right-bottom > .transition {
     transform: translate(100%);
     opacity: 0;
 }

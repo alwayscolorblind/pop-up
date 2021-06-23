@@ -47,9 +47,9 @@ export class PopUp {
         const popUp = document.createElement("div");
         popUp.classList.add("pop-up");
         popUp.classList.add(type);
-        popUp.classList.add("disactive");
+        popUp.classList.add("transition"); // Add class "disactive" to start transition
         setTimeout(() => {
-            popUp.classList.remove("disactive");
+            popUp.classList.remove("transition");
         }, 0);
 
         const circle = document.createElement("div");
