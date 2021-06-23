@@ -39,11 +39,9 @@ export class PopUp {
     show({type = "success", time = this.#currentProperties.defaultTime} = this.#defaultPopupConfig) {
         let popUp = null;
 
-        if (this.#types.indexOf(type) !== -1) {
-            popUp = this.#createPopUp(type);
-        } else {
-            throw new Error(`Unknown type: ${type}`);
-        }
+        if (this.#types.indexOf(type) === -1) throw new Error(`Unknown type: ${type}`);
+
+        popUp = this.#createPopUp(type);
 
         this.#addRemovingTimeout(popUp, time);
 
