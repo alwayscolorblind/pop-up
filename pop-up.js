@@ -47,10 +47,10 @@ export class PopUp {
         const popUp = document.createElement("div");
         popUp.classList.add("pop-up");
         popUp.classList.add(type);
-        popUp.classList.add("transition"); // Add class "disactive" to start transition
+        popUp.classList.add("transition"); // Added class "transition" to move popUp from client's view
         setTimeout(() => {
             popUp.classList.remove("transition");
-        }, 0);
+        }, 0); // Remove class to start animation
 
         const circle = document.createElement("div");
 
