@@ -1,35 +1,49 @@
 export class PopUp {
     #popUpContainer = null;
-    #deleteContainerTimer = null;
-    static #types = new Set(["success", "denide", "warn"]);
-    static #positionTypes = new Set(["left-top", "right-top", "left-bottom", "right-bottom"]);
+    #types = ["success", "denide", "warn"];
+    #defaultPopupConfig = {
+        type: "success"
+    }
+    #positionTypes = ["left-top", "right-top", "left-bottom", "right-bottom"];
 
     constructor(properties) {
         const defaultProperties = {
             elem: document.querySelector("body"),
-            type: "success",
             position: "left-top",
-            time: 2000
+            defaultTime: 2000
         }
 
         this.currentProperties = {
             ...defaultProperties, ...properties
         }
 
-
-    }
-
-    create() {
-        this.#popUpInit(this.currentProperties);
-    }
-
-    #popUpInit({elem, type, position, time}) {
-        if (!this.#popUpContainer) {
-            this.#popUpContainer = document.createElement("div");
-            this.#popUpContainer.classList.add("pop-up-container");
-            this.#popUpContainer.classList.add(position);
+        if (this.#positionTypes.indexOf(this.currentProperties.position) === -1) {
+            throw new Error(`Unknown position: ${this.currentProperties.position}`);
         }
 
+        this.#defaultPopupConfig.time = this.currentProperties.defaultTime;
+
+        this.#initContainer(this.currentProperties);
+    }
+
+    #initContainer({elem, position}) {
+        this.#popUpContainer = document.createElement("div");
+
+        this.#popUpContainer.classList.add("pop-up-container");
+        this.#popUpContainer.classList.add(position);
+
+        elem.append(this.#popUpContainer);
+    }
+
+    create({ type = "success", time = this.currentProperties.defaultTime} = this.#defaultPopupConfig) {
+        if (this.#types.indexOf(type) !== -1){
+            this.#popUpCreate(this.#popUpContainer, type, time);
+        } else {
+            throw new Error(`Unknown type: ${type}`);
+        }
+    }
+
+    #popUpCreate(container, type, time) {
         const popUp = document.createElement("div");
         popUp.classList.add("pop-up");
         popUp.classList.add(type);
@@ -65,12 +79,7 @@ export class PopUp {
         }
 
         popUp.prepend(circle, desc);
-        this.#popUpContainer.append(popUp);
-        try  {
-            elem.append(this.#popUpContainer);
-        } catch (e) {
-            console.error(new Error(`${elem} is not node element`));
-        }
+        container.append(popUp);
 
         setTimeout(() => {
             popUp.classList.add("disactive");
@@ -78,12 +87,5 @@ export class PopUp {
                 popUp.remove();
             }, 700)
         }, time - 700);
-
-        if (this.#deleteContainerTimer) clearTimeout(this.#deleteContainerTimer);
-
-        this.#deleteContainerTimer = setTimeout(() => {
-            this.#popUpContainer.remove();
-            this.#popUpContainer = null;
-        }, time);
     }
 }
